@@ -12,7 +12,7 @@ G=nx.Graph()
 #Input Values
 class_number=int(input("How many classes at a time? "))
 period_number = int(input("How many periods per day? "))
-size=math.floor(int(input("What is the average class size? ")))
+size=math.floor(float(input("What is the average class size? ")))
 group_number = int(input("How many groups? (One group per day) "))
 iterations = int(input("How many times should we iterate? ")) # Number of times each group of students runs on the model
 students=list(range(size*class_number*group_number))
