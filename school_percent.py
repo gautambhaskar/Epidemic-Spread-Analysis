@@ -31,6 +31,7 @@ total_pop = size*class_number*group_number
 time_completed = 0
 infected = []
 recovered = []
+started = False
 
 G.add_nodes_from(students)
 
@@ -42,7 +43,7 @@ for i in range(group_number):
     for class_x in range(class_number): # Random classes are assigned 
         new_class = random.sample(group, size)
         groups[i].append(list(new_class))
-        group = list(set(group).difference(set(new_class)))
+        group = list(set(group).difference(set(new_class))) # Nodes of new_class removed from group
         for student_1 in groups[i][class_x]:
             for student_2 in groups[i][class_x]:
                 G.add_edge(student_1, student_2)
@@ -55,6 +56,35 @@ while iter_num < iterations:
         print("Group " + str(day + 1) + " at school today")
          #Iterating through each class period of the day
         for period in range(period_number):
+            if started == False:
+                group = list(students[(i*class_number*size):((i+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
+                infected.extend(group[0:math.floor(rho*len(group))])
+                for class_x in range(class_number): # Random classes are assigned 
+                    new_class = random.sample(group, size)
+                    groups[i].append(list(new_class))
+                    group = list(set(group).difference(set(new_class))) # Nodes of new_class removed from group
+                    for student_1 in groups[i][class_x]:
+                        for student_2 in groups[i][class_x]:
+                            G.add_edge(student_1, student_2)
+                started = True
+            #Clear graph of edges
+            else:
+                G.clear()
+                G.add_nodes_from(students)
+                groups[day].clear()
+                #Adding new edges to graph
+                group = list(students[(day*class_number*size):((day+1)*class_number*size)]) # Holder of nodes of the group being considered.
+                for class_x in range(class_number): # Random classes are assigned 
+                    new_class = random.sample(group, size)
+
+                    #Clearing and editing class selections
+
+                    groups[day].append(list(new_class))
+                    group = list(set(group).difference(set(new_class))) # Removes nodes, as they are added to classes to prevent node being present in multiple classes.
+                    # Creates complete graph for each class
+                    for student_1 in groups[day][class_x]:
+                        for student_2 in groups[day][class_x]:
+                            G.add_edge(student_1, student_2)
             # Runs simulation
             sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True)
             # Retrieves node statuses as given time of 'time_reading'
@@ -93,23 +123,7 @@ while iter_num < iterations:
             #  including those not attending school right now.
             print("Max infected this period: " + str(np.amax(D['I'][0:split_point])))
 
-            #Clear graph of edges
-            G.clear()
-            G.add_nodes_from(students)
-            groups[day].clear()
-            #Adding new edges to graph
-            group = list(students[(day*class_number*size):((day+1)*class_number*size)]) # Holder of nodes of the group being considered.
-            for class_x in range(class_number): # Random classes are assigned 
-                new_class = random.sample(group, size)
-
-                #Clearing and editing class selections
-
-                groups[day].append(list(new_class))
-                group = list(set(group).difference(set(new_class))) # Removes nodes, as they are added to classes to prevent node being present in multiple classes.
-                # Creates complete graph for each class
-                for student_1 in groups[day][class_x]:
-                    for student_2 in groups[day][class_x]:
-                        G.add_edge(student_1, student_2)
+            
 
             # Printing time to the console
             print("t = " + str(time_completed))
