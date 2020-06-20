@@ -37,7 +37,7 @@ G.add_nodes_from(students)
 # Creating the initial groups and classes
 for i in range(group_number):
     groups.append([]) #Creating data structure to hold nodes of each group
-    group = list(students[(i*class_number*size):((i+1)*class_number*size)])
+    group = list(students[(i*class_number*size):((i+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
     infected.extend(group[0:math.floor(rho*len(group))])
     for class_x in range(class_number): # Random classes are assigned 
         new_class = random.sample(group, size)
