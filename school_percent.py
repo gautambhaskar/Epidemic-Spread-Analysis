@@ -51,10 +51,10 @@ while iter_num < iterations:
                 infected.extend(group[0:math.floor(rho*len(group))])
                 for class_x in range(class_number): # Random classes are assigned 
                     new_class = random.sample(group, size)
-                    groups[i].append(list(new_class))
+                    groups[day].append(list(new_class))
                     group = list(set(group).difference(set(new_class))) # Nodes of new_class removed from group
-                    for student_1 in groups[i][class_x]:
-                        for student_2 in groups[i][class_x]:
+                    for student_1 in groups[day][class_x]:
+                        for student_2 in groups[day][class_x]:
                             G.add_edge(student_1, student_2)
                 started = True
             #Clear graph of edges
