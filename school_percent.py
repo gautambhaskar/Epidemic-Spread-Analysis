@@ -38,16 +38,6 @@ G.add_nodes_from(students)
 # Creating the initial groups and classes
 for i in range(group_number):
     groups.append([]) #Creating data structure to hold nodes of each group
-    group = list(students[(i*class_number*size):((i+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
-    infected.extend(group[0:math.floor(rho*len(group))])
-    for class_x in range(class_number): # Random classes are assigned 
-        new_class = random.sample(group, size)
-        groups[i].append(list(new_class))
-        group = list(set(group).difference(set(new_class))) # Nodes of new_class removed from group
-        for student_1 in groups[i][class_x]:
-            for student_2 in groups[i][class_x]:
-                G.add_edge(student_1, student_2)
-
 #Running the simulation and changing classes
 while iter_num < iterations:
     for day in range(group_number): # Iterating through each group-specific day. 
