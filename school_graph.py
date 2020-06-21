@@ -50,9 +50,11 @@ while(True):
         #Creats the classes for each period where each student is randomly assigned#
         for x in var_list:
             globals()[x]=[]
-            new_class = random.sample(L, size)
-            globals[x].append(list(new_class))
-            L = list(set(L).difference(set(new_class))) # Nodes of new_class removed from group
+            for b in range(size):
+                node=random.choice(L)
+                globals()[x].append(node)
+                L.remove(node)
+            
 
 
         #adds edges to create a complete graph within each new class#
