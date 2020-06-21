@@ -23,7 +23,7 @@ time_reading = 1 # Interval of time sim is run for during each period
 
 # Initializing Statistics
 iter_num = 0 # Used for iterating through each set of days
-groups = [] # Used to alot students to one of the day-specific groups
+groups = [] # Used to assign students to one of the day-specific groups
 max_infected = 0 
 peak_infected = 0
 time_to_peak = 0
