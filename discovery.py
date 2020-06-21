@@ -18,6 +18,7 @@ rho = float(input("Enter initial percent infected: "))
 gamma = float(input("Enter recovery rate: ")) #Recovery Rate
 tau = float(input("Enter transmission rate: ")) #Transmission Rate
 time_reading = 2 #Time interval (must be integer) between each graph switch
+a = 0.5 # Percent of edges connected between families
 iterations = int(input("Enter number of iterations of graph [int]: ")) # Number of times to change the graph
 disc_rate = float(input("Enter discovery rate: ")) # Percentage of infected travellers discovered
 # -----------------------------------------------------------
@@ -32,21 +33,42 @@ initial_size = math.floor(rho*total_fam*fam_size) #Initial infected population s
 # Defining some node lists. Nodes will be identified by unique integer-value IDs
 statuses = []
 recovereds = []
-infecteds = list(range(initial_size))
+infecteds = random.sample(list(range(total_pop)), math.floor(rho*total_pop))
 discovered = []
 
 #Creating the initial graph
-G = nx.relaxed_caveman_graph(total_fam, fam_size, 0.3, seed=42)
+print("Creating the initial graph")
+G = nx.Graph()
+for fam in range(total_fam):
+    H = nx.complete_graph(fam_size)
+    G=nx.disjoint_union(H,G)
 
+edges=G.edges()
+
+L=[]
+maximum=(total_fam*fam_size)
+
+for x in range(maximum):
+    for b in range(maximum):
+        n=(b,x)
+        L.append(n)
+        
+for edge in edges:
+    L.remove(edge)
+
+     
+a=math.floor(maximum*a/100)
+
+edge_list=random.sample(L, a)
+G.add_edges_from(edge_list)
 
 
 for i in range(iterations):
     #Running the simulation
-    sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, tmax=time_reading return_full_data=True)
+    sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
     statuses = list(sim.get_statuses(time=time_reading).values())
     infecteds = []
     recovereds = []
-
     #Storing infected and recovered node info for next graph
     for j in range(len(statuses)):
         if statuses[j]=='I':

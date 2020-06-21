@@ -19,6 +19,7 @@ rho = float(input("Enter initial percent infected: ")) #Initial infected populat
 gamma = float(input("Enter recovery rate: ")) #Recovery Rate
 tau = float(input("Enter transmission rate: ")) #Transmission Rate
 time_reading = 1 #Time interval (must be integer) between each graph switch
+a = 0.5 # Percent of edges connected between families
 imgr_rate = float(input("Enter percentage of immigrants infected: ")) #Percentage of arriving travellers infected
 trv_pr_sim = int(input("Enter number travellers arriving per iteration [int]: ")) #Number of travellers arriving per iteration
 interactions_per_trv = int(input("Enter interactions per traveller [int]: ")) #Number of edges per traveller node.
@@ -36,12 +37,33 @@ initial_size = math.floor(rho*total_fam*fam_size)
 # Defining some node lists. Nodes will be identified by unique integer-value IDs
 statuses = []
 recovereds = []
-infecteds = list(range(initial_size))
+infecteds = random.sample(list(range(total_pop)), math.floor(rho*total_pop))
 discovered = []
 
 #Creating the initial graph
-G = nx.relaxed_caveman_graph(total_fam, fam_size, 0.3, seed=42)
+G = nx.Graph()
+for fam in range(total_fam):
+    H = nx.complete_graph(fam_size)
+    G=nx.disjoint_union(H,G)
 
+edges=G.edges()
+
+L=[]
+maximum=(total_fam*fam_size)
+
+for x in range(maximum):
+    for b in range(maximum):
+        n=(b,x)
+        L.append(n)
+        
+for edge in edges:
+    L.remove(edge)
+
+     
+a=math.floor(maximum*a/100)
+
+edge_list=random.sample(L, a)
+G.add_edges_from(edge_list)
 
 
 for i in range(iterations):
@@ -62,7 +84,7 @@ for i in range(iterations):
     t, D = sim.summary()
     local_max = np.amax(D['I'])
     if local_max > max_infected:
-        max_infected = local_max)
+        max_infected = local_max
         time_to_peak = t[np.where(D['I']==max_infected)][0] + i*time_reading
 
     # Printing time to the console
