@@ -42,7 +42,7 @@ G = nx.relaxed_caveman_graph(total_fam, fam_size, 0.3, seed=42)
 
 for i in range(iterations):
     #Running the simulation
-    sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, return_full_data=True)
+    sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, tmax=time_reading return_full_data=True)
     statuses = list(sim.get_statuses(time=time_reading).values())
     infecteds = []
     recovereds = []
@@ -56,12 +56,9 @@ for i in range(iterations):
     
     # Getting the peak value
     t, D = sim.summary()
-    try:
-        split_point = np.where(t>time_reading)[0][0]
-    except:
-        split_point = 1
-    if np.amax(D['I'][0:split_point]) > max_infected:
-        max_infected = np.amax(D['I'])
+    local_max = np.amax(D['I'])
+    if local_max > max_infected:
+        max_infected = local_max
         time_to_peak = t[np.where(D['I']==max_infected)][0] + i*time_reading
 
     # Printing time to the console
