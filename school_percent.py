@@ -57,7 +57,7 @@ while iter_num < iterations:
          #Iterating through each class period of the day
         for period in range(period_number):
             if started == False:
-                group = list(students[(i*class_number*size):((i+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
+                group = list(students[(day*class_number*size):((day+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
                 infected.extend(group[0:math.floor(rho*len(group))])
                 for class_x in range(class_number): # Random classes are assigned 
                     new_class = random.sample(group, size)
