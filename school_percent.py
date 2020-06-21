@@ -59,7 +59,7 @@ while iter_num < iterations:
                         for student_2 in groups[day][class_x]:
                             G.add_edge(student_1, student_2)
                 started = True
-                sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
+                sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
 
             #Clear graph of edges
             else:
