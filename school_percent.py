@@ -36,8 +36,6 @@ started = False
 G.add_nodes_from(students)
 
 
-#Setting random initial infected
-infected = random.sample(students, math.floor(rho*len(students))) # EDIT: Added random sampling of infected population.
 
 # Creating the initial groups and classes
 for i in range(group_number):
@@ -61,6 +59,8 @@ while iter_num < iterations:
                         for student_2 in groups[day][class_x]:
                             G.add_edge(student_1, student_2)
                 started = True
+                sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
+
             #Clear graph of edges
             else:
                 G.clear()
@@ -79,8 +79,9 @@ while iter_num < iterations:
                     for student_1 in groups[day][class_x]:
                         for student_2 in groups[day][class_x]:
                             G.add_edge(student_1, student_2)
+                sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
+
             # Runs simulation
-            sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
             # Retrieves node statuses as given time of 'time_reading'
             statuses = list(sim.get_statuses(time=time_reading).values())
             #Clears all previous infected and retrieved data so as to accept new data from the simulation
