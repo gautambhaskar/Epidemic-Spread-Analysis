@@ -18,7 +18,7 @@ rho = float(input("Enter initial percent infected: "))
 gamma = float(input("Enter recovery rate: ")) #Recovery Rate
 tau = float(input("Enter transmission rate: ")) #Transmission Rate
 time_reading = 2 #Time interval (must be integer) between each graph switch
-a = 0.5 # Percent of edges connected between families
+a = 0.3 # Percent of edges connected between families
 iterations = int(input("Enter number of iterations of graph [int]: ")) # Number of times to change the graph
 disc_rate = float(input("Enter discovery rate: ")) # Percentage of infected travellers discovered
 # -----------------------------------------------------------
@@ -46,20 +46,21 @@ for fam in range(total_fam):
 edges=G.edges()
 
 L=[]
-maximum=(total_fam*fam_size)
 
-for x in range(maximum):
-    for b in range(maximum):
+for x in range(total_pop):
+    for b in range(total_pop):
         n=(b,x)
         L.append(n)
         
-for edge in edges:
-    L.remove(edge)
+#for edge in edges:
+    #L.remove(edge)
+L = [edge for edge in L if edge not in edges]
 
-     
-a=math.floor(maximum*a/100)
+edge_list=random.sample(L, math.floor(a*total_pop))
+G.add_edges_from(edge_list)
 
-edge_list=random.sample(L, a)
+
+edge_list=random.sample(L, math.floor(a*total_pop))
 G.add_edges_from(edge_list)
 
 
@@ -67,6 +68,8 @@ for i in range(iterations):
     #Running the simulation
     sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
     statuses = list(sim.get_statuses(time=time_reading).values())
+    #sim.display(time=time_reading)
+    #plt.show()
     infecteds = []
     recovereds = []
     #Storing infected and recovered node info for next graph
@@ -87,9 +90,13 @@ for i in range(iterations):
     print("t = " + str(i*time_reading))
 
     #Changing the graph to isolate discovered nodes
-    for k in range(len(infecteds)):
-        if k < disc_rate*len(infecteds): 
-            node = infecteds[k]
+    infected_not_discovered = []
+    for node in infecteds:
+        if node not in discovered:
+            infected_not_discovered.append(node)
+    for k in range(len(infected_not_discovered)):
+        if k < disc_rate*len(infected_not_discovered): 
+            node = infected_not_discovered[k]
             G.remove_node(node)
             G.add_node(node)
             discovered.append(node)

@@ -19,7 +19,7 @@ rho = float(input("Enter initial percent infected: ")) #Initial infected populat
 gamma = float(input("Enter recovery rate: ")) #Recovery Rate
 tau = float(input("Enter transmission rate: ")) #Transmission Rate
 time_reading = 1 #Time interval (must be integer) between each graph switch
-a = 0.5 # Percent of edges connected between families
+a = 0.3 # Percent of edges connected between families
 imgr_rate = float(input("Enter percentage of immigrants infected: ")) #Percentage of arriving travellers infected
 trv_pr_sim = int(input("Enter number travellers arriving per iteration [int]: ")) #Number of travellers arriving per iteration
 interactions_per_trv = int(input("Enter interactions per traveller [int]: ")) #Number of edges per traveller node.
@@ -49,20 +49,17 @@ for fam in range(total_fam):
 edges=G.edges()
 
 L=[]
-maximum=(total_fam*fam_size)
 
-for x in range(maximum):
-    for b in range(maximum):
+for x in range(total_pop):
+    for b in range(total_pop):
         n=(b,x)
         L.append(n)
         
-for edge in edges:
-    L.remove(edge)
+#for edge in edges:
+#    L.remove(edge)
+L = [edge for edge in L if edge not in edges]
 
-     
-a=math.floor(maximum*a/100)
-
-edge_list=random.sample(L, a)
+edge_list=random.sample(L, math.floor(a*total_pop))
 G.add_edges_from(edge_list)
 
 
@@ -72,6 +69,8 @@ for i in range(iterations):
     statuses = list(sim.get_statuses(time=time_reading).values())
     infecteds = []
     recovereds = []
+    #sim.display(time=time_reading)
+    #plt.show()
 
     #Storing infected and recovered node info for next graph
     for j in range(len(statuses)):
@@ -97,7 +96,7 @@ for i in range(iterations):
     for j in range(trv_pr_sim): 
         node = highest_value + j + 1
         G.add_node(node)
-        if j < (trv_pr_sim*imgr_rate) * disc_rate:
+        if j < (trv_pr_sim*imgr_rate * disc_rate):
             discovered.append(node)
             infecteds.append(node)
         else:
