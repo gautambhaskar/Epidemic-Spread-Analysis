@@ -88,8 +88,8 @@ for i in range(iterations):
     statuses = list(sim.get_statuses(time=time_reading).values())
     infecteds = []
     recovereds = []
-    sim.display(time=time_reading)
-    plt.show()
+    #sim.display(time=time_reading)
+    #plt.show()
 
 
 
@@ -112,7 +112,6 @@ for i in range(iterations):
 
     # Printing time to the console
     print("t = " + str(i*time_reading))
-    
 
 
 
