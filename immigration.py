@@ -62,10 +62,16 @@ L = [edge for edge in L if edge not in edges]
 edge_list=random.sample(L, math.floor(a*total_pop))
 G.add_edges_from(edge_list)
 
+started = False
 
 for i in range(iterations):
     #Running the simulation
-    sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
+    if started==False:
+        sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
+        started=True
+    else:
+        sim = e.fast_SIR(G, tau, gamma, initial_infecteds=infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
+
     statuses = list(sim.get_statuses(time=time_reading).values())
     infecteds = []
     recovereds = []

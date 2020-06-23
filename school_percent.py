@@ -33,9 +33,6 @@ infected = []
 recovered = []
 started = False
 
-G.add_nodes_from(students)
-
-
 
 # Creating the initial groups and classes
 for i in range(group_number):
@@ -49,21 +46,7 @@ while iter_num < iterations:
         print("Group " + str(day + 1) + " at school today")
          #Iterating through each class period of the day
         for period in range(period_number):
-            if started == False:
-                group_students = list(students[(day*class_number*size):((day+1)*class_number*size)]) # Temporary variable used to hold all student nodes of this day's group
-                for class_x in range(class_number): # Random classes are assigned 
-                    new_class = random.sample(group_students, size)
-                    groups[day].append(list(new_class))
-                    group_students = list(set(group_students).difference(set(new_class))) # Nodes of new_class removed from group
-                    for student_1 in groups[day][class_x]:
-                        for student_2 in groups[day][class_x]:
-                            G.add_edge(student_1, student_2)
-                started = True
-                sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
-
-            #Clear graph of edges
-            else:
-                G.clear()
+             G.clear()
                 G.add_nodes_from(students)
                 groups[day].clear()
                 #Adding new edges to graph
@@ -79,6 +62,13 @@ while iter_num < iterations:
                     for student_1 in groups[day][class_x]:
                         for student_2 in groups[day][class_x]:
                             G.add_edge(student_1, student_2)
+           
+            # Running the simulation
+            if started == False:
+                started = True
+                sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
+
+            else:
                 sim = e.fast_SIR(G, tau, gamma, initial_infecteds = infected, initial_recovereds = recovered, return_full_data=True, tmax=time_reading)
 
             # Runs simulation
