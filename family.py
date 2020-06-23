@@ -33,8 +33,8 @@ for x in edges:
      L.remove(x)
 
 
-a=int(input("percent connected? "))## fix the extra edge thing
-a=math.floor(maximum*a/100) # NOTE: Shouldn't this use len(L) instead of maximum????
+a=float(input("percent connected? "))## fix the extra edge thing
+a = math.floor(a*maximum) # NOTE: Shouldn't this use len(L) instead of maximum????
 for x in range(a):
      edge=random.choice(L)
      G.add_edge(edge[0],edge[1])
@@ -45,7 +45,7 @@ tau =float(input('what is the transmition rate? '))            #transmission rat
 gamma =float(input('what is the recovery rate? '))             #recovery rate
 rho = float(input('what percent is radomly initialized? '))
 
-SIR=EoN.fast_SIR(G, tau, gamma, rho=rho, tmax = tmax,return_full_data=True)
+SIR=EoN.fast_SIR(G, tau, gamma, initial_infecteds=random.sample(list(range(maximum)), math.floor(rho*maximum)), tmax = tmax,return_full_data=True)
 #SIR.animate()
 t,d=SIR.summary()
 max_infected= max(d['I'])

@@ -35,7 +35,7 @@ total_pop = total_fam * fam_size
 initial_size = math.floor(rho*total_fam*fam_size)
 
 # Defining some node lists. Nodes will be identified by unique integer-value IDs
-statuses = []
+statuses = list(range(total_pop))
 recovereds = []
 infecteds = random.sample(list(range(total_pop)), math.floor(rho*total_pop))
 discovered = []
@@ -65,39 +65,9 @@ G.add_edges_from(edge_list)
 started = False
 
 for i in range(iterations):
-    #Running the simulation
-    if started==False:
-        sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
-        started=True
-    else:
-        sim = e.fast_SIR(G, tau, gamma, initial_infecteds=infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
-
-    statuses = list(sim.get_statuses(time=time_reading).values())
-    infecteds = []
-    recovereds = []
-    #sim.display(time=time_reading)
-    #plt.show()
-
-    #Storing infected and recovered node info for next graph
-    for j in range(len(statuses)):
-        if statuses[j]=='I':
-            infecteds.append(j)
-        if statuses[j]=='R':
-            recovereds.append(j)
-    
-    # Getting the peak value
-    t, D = sim.summary()
-    local_max = np.amax(D['I'])
-    if local_max > max_infected:
-        max_infected = local_max
-        time_to_peak = t[np.where(D['I']==max_infected)][0] + i*time_reading
-
-    # Printing time to the console
-    print("t = " + str(i*time_reading))
     
     #Getting the highest value node, so as to not make new nodes with same identity
     highest_value = len(statuses) - 1
-
     #Changing the graph
     for j in range(trv_pr_sim): 
         node = highest_value + j + 1
@@ -111,6 +81,41 @@ for i in range(iterations):
             for k in range(interactions_per_trv):
                 G.add_edge(node, random.randint(0, node - 1))
         total_pop += 1 #Adding one to the total population metric
+
+    #Running the simulation
+    sim = e.fast_SIR(G, tau, gamma, initial_infecteds=infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
+
+    statuses = list(sim.get_statuses(time=time_reading).values())
+    infecteds = []
+    recovereds = []
+    sim.display(time=time_reading)
+    plt.show()
+
+
+
+
+
+    #Storing infected and recovered node info for next graph
+    for j in range(len(statuses)):
+        if statuses[j]=='I':
+            infecteds.append(j)
+        if statuses[j]=='R':
+            recovereds.append(j)
+    
+    # Getting the peak value
+    t, D = sim.summary()
+    local_max = np.amax(D['I'])
+
+    if local_max > max_infected:
+        max_infected = local_max
+        time_to_peak = t[np.where(D['I']==max_infected)][0] + i*time_reading
+
+    # Printing time to the console
+    print("t = " + str(i*time_reading))
+    
+
+
+
 
 #Showing results at the end of the run
 print(" ")

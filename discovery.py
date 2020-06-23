@@ -67,11 +67,7 @@ started = False
 
 for i in range(iterations):
     #Running the simulation
-    if started==False:
-        sim = e.fast_SIR(G, tau, gamma, rho=rho, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
-        started=True
-    else:
-        sim = e.fast_SIR(G, tau, gamma, initial_infecteds=infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
+    sim = e.fast_SIR(G, tau, gamma, initial_infecteds=infecteds, initial_recovereds = recovereds, tmax=time_reading, return_full_data=True)
 
     statuses = list(sim.get_statuses(time=time_reading).values())
     #sim.display(time=time_reading)
