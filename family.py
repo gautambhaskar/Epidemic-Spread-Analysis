@@ -76,6 +76,7 @@ with open('family.csv', mode='w') as f:
                stats[5] += 100*max_infected/(maximum*run_iters)
                #plt.show()
           print('-----------------------------------------')
-          percent += 0.1
-          print('Row written')
           writer.writerow([str(stats[0]), str(stats[1]), str(stats[2]), str(stats[3]), str(stats[4]), str(stats[5]), str(percent)])
+          print('Row written')
+          percent += 0.1
+          
