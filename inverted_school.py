@@ -15,6 +15,7 @@ while(True):
     tau =float(input('what is the transmition rate? '))            #transmission rate
     gamma =float(input('what is the recovery rate? '))             #recovery rate
     rho = float(input('what percent is radomly initialized? '))
+    days=int(input('how many days to run for '))
     counter=0
     tmin=0
     tmax=2
@@ -55,12 +56,12 @@ while(True):
     infected=[]
     recovered=[]
     #this is where the 'school day' starts#
-    for periods in range(periods):
+    for period in range(periods*days):
         
         #creates list of teachers#
         for x in range(students,students+classes):
             teachers.append(x)
-
+        
         new_edges=[]
         #adds edges to the graph between teachers and students#
         if counter==0:
@@ -82,6 +83,41 @@ while(True):
                     new_edges.append(edge)
                 teachers.remove(node)
             
+
+
+
+
+
+        if (period/periods==int(period/periods)) and (counter!=0):
+            
+            SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 32, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
+            t,d=SIR.summary()
+        
+        
+            
+            node_stats=list(SIR.get_statuses(nodelist=None, time=tmax).values())
+
+            #creates list of infecteds and recoverds after each iteration to feed into the next#
+            final_infected=[]
+            for i in range(len(node_stats)):
+                if node_stats[i]=='I':
+                    infected.append(i)
+                    final_infected.append(i)
+                elif node_stats[i]=='R':
+                    recovered.append(i)
+        
+
+            max_infected_list.append(max(d['I']))
+
+        
+            time_max=t[np.where(d['I']==max(d['I']))]+time
+
+            peak_time_list.append(time_max)
+
+
+
+
+
 
         #for the first iteration, the infecteds are distributed randomly. The rest of the periods depend on the previous infected and recovered lists.
         if counter==0:
@@ -128,7 +164,7 @@ while(True):
     print('max infected= ',max_infected)
     print('peak time= ',peak_time)
     print('population size= ', students+classes)
-    print('percent infected= ',total_infected/students,'%')
+    print('percent infected= ',100*total_infected/(students+classes),'%')
     
     
   
