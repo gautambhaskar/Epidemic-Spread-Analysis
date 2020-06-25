@@ -38,7 +38,7 @@ while(True):
 
 
         if (period/periods==int(period/periods)) and (counter!=0):
-            print('sdf')
+            
             SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 32, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
             t,d=SIR.summary()
         
