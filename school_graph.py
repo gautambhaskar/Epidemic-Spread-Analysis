@@ -44,7 +44,7 @@ while(True):
         
         
             
-            node_stats=list(SIR.get_statuses(nodelist=None, time=tmax).values())
+            node_stats=list(SIR.get_statuses(nodelist=None, time=32).values())
 
             #creates list of infecteds and recoverds after each iteration to feed into the next#
             final_infected=[]
