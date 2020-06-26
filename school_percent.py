@@ -51,7 +51,7 @@ with open('school_percent.csv', mode='w') as f:
             #Running the simulation and changing classes
             while iter_num < iterations:
                 for day in range(group_number): # Iterating through each group-specific day. 
-
+                    
                     print("--------- Day " + str((day+1)+(group_number*iter_num)) + "-----------")
                     print("Group " + str(day + 1) + " at school today")
                     #Iterating through each class period of the day
@@ -72,7 +72,9 @@ with open('school_percent.csv', mode='w') as f:
                             for student_1 in groups[day][class_x]:
                                 for student_2 in groups[day][class_x]:
                                     G.add_edge(student_1, student_2)
-                    
+
+
+
                         # Running the simulation
                         if started == False:
                             started = True
@@ -116,6 +118,43 @@ with open('school_percent.csv', mode='w') as f:
 
                         # Printing time to the console
                         print("t = " + str(time_completed))
+
+                    ##
+                    SIR=e.fast_SIR(G, 0, gamma, tmin=0, tmax = 32, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
+
+                    statuses = list(sim.get_statuses(time=32).values())
+                        #Clears all previous infected and retrieved data so as to accept new data from the simulation
+                    infected.clear()
+                    recovered.clear()
+                        # Simple statement used to hold a time value, used to calculate time to peak and so on.
+                    time_completed += time_reading
+
+                        #Storing infected and recovered node info from the simulation 
+                    for j in range(len(statuses)):
+                        if statuses[j]=='I':
+                            infected.append(j)
+                        if statuses[j]=='R':
+                            recovered.append(j)
+                        
+                        # Getting the peak value
+                    t, D = sim.summary()
+
+                        # If the max of the sliced list from the array is greater than the max_infected value
+                        # (max number of ppl infected at a particular time so far), then the max_infected is
+                        #  changed to this value.
+                    local_max = np.amax(D['I'])
+                    if local_max > max_infected:
+                        max_infected = local_max
+                        time_to_peak = t[np.where(D['I']==max_infected)][0] + time_completed
+
+
+                        
+                    
+                    ##
+                    
+
+
+                    
                 iter_num += 1
 
                                 
