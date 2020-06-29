@@ -7,7 +7,7 @@ import math
 import csv
 
 percent = 0.0
-run_iters = 10
+run_iters = 20
 
 #To perform simulation with unrestricted immigration, set trv_pr_sim to 800. To simulate no immigration, set to 0. 
 # To similate discovery of infected travellers, set disc_rate to desired percentage.
@@ -26,11 +26,37 @@ trv_pr_sim = int(input("Enter number travellers arriving per iteration [int]: ")
 interactions_per_trv = int(input("Enter interactions per traveller [int]: ")) #Number of edges per traveller node.
 iterations = int(input("Enter number of iterations (# of times travellers are added) [int]: ")) # Number of times to change the graph
 # -----------------------------------------------------------
+total_pop = total_fam * fam_size
+initial_size = math.floor(rho*total_fam*fam_size)
+
+G = nx.Graph()
+for fam in range(total_fam):
+    H = nx.complete_graph(fam_size)
+    G=nx.disjoint_union(H,G)
+
+edges=G.edges()
+
+L=[]
+
+for x in range(total_pop):
+    for b in range(total_pop):
+        n=(b,x)
+        L.append(n)
+        
+#for edge in edges:
+#    L.remove(edge)
+L = [edge for edge in L if edge not in edges]
+
+edge_list=random.sample(L, math.floor(a*total_pop))
+G.add_edges_from(edge_list)
+
+
 with open('immigration.csv', mode='w') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['Total Population', 'Max Infected', 'Total Infected', 'Time to Peak', 'Percent max infected', 'Percent total infected', 'Total Discovered & Isolated', 'Percent Discovered & Isolated','Discovery Rate'])
+    statuses = list(range(total_pop))
 
-    while percent < 1:
+    while percent <= 1:
         disc_rate = percent # Percentage of infected travellers discovered
         stats = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         for i in range(run_iters):
@@ -39,35 +65,14 @@ with open('immigration.csv', mode='w') as f:
             peak_infected = 0
             time_to_peak = 0
             total_pop = total_fam * fam_size
-            initial_size = math.floor(rho*total_fam*fam_size)
 
             # Defining some node lists. Nodes will be identified by unique integer-value IDs
-            statuses = list(range(total_pop))
             recovereds = []
             infecteds = random.sample(list(range(total_pop)), math.floor(rho*total_pop))
             discovered = []
-
             #Creating the initial graph
-            G = nx.Graph()
-            for fam in range(total_fam):
-                H = nx.complete_graph(fam_size)
-                G=nx.disjoint_union(H,G)
-
-            edges=G.edges()
-
-            L=[]
-
-            for x in range(total_pop):
-                for b in range(total_pop):
-                    n=(b,x)
-                    L.append(n)
-                    
-            #for edge in edges:
-            #    L.remove(edge)
-            L = [edge for edge in L if edge not in edges]
-
-            edge_list=random.sample(L, math.floor(a*total_pop))
-            G.add_edges_from(edge_list)
+            G.remove_nodes_from(range(len(statuses))[total_pop:])
+            statuses = list(range(total_pop))
 
             started = False
 
@@ -117,7 +122,6 @@ with open('immigration.csv', mode='w') as f:
                     max_infected = local_max
                     time_to_peak = t[np.where(D['I']==max_infected)][0] + i*time_reading
 
-
             #Showing results at the end of the run
             print(" ")
             print("Total Population: " + str(total_pop))
@@ -138,4 +142,4 @@ with open('immigration.csv', mode='w') as f:
         print('---------------------------- ' + str(percent) + ' --------------------------')
         writer.writerow([str(stats[0]), str(stats[1]), str(stats[2]), str(stats[3]), str(stats[4]), str(stats[5]), str(stats[6]), str(stats[7]), str(percent)])
         print('Row written')
-        percent += 0.1
+        percent += 0.02
