@@ -23,7 +23,7 @@ rho = float(input('what percent is radomly initialized? '))
 days=int(input('how many days to run for '))
 counter=0
 tmin=0
-tmax=2
+tmax=1
 
 
 max_infected_list=[]
@@ -88,19 +88,19 @@ for period in range(periods*days):
                 new_edges.append(edge)
             teachers.remove(node)
         
-
+    print("Period: " + str(period))
 
 
 
 
     if (period/periods==int(period/periods)) and (counter!=0):
         
-        SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 32, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
+        SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 16, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
         t,d=SIR.summary()
     
-    
+        time += 16
         
-        node_stats=list(SIR.get_statuses(nodelist=None, time=32).values())
+        node_stats=list(SIR.get_statuses(nodelist=None, time=16).values())
 
         #creates list of infecteds and recoverds after each iteration to feed into the next#
         final_infected=[]
@@ -151,7 +151,7 @@ for period in range(periods*days):
     max_infected_list.append(max(d['I']))
     
     peak_time_list.append(t[np.where(d['I']==max(d['I']))]+time)
-    time=time+2
+    time=time+1
 
 
     #deletes edges between teachers and students to get ready for next period/switch#

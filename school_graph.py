@@ -5,6 +5,8 @@ import random
 import math
 import itertools
 import numpy as np
+from itertools import combinations
+
 while(True):
     G=nx.Graph()
     #statistics#
@@ -18,7 +20,7 @@ while(True):
     days=int(input('how many days to run for '))
     counter=0
     tmin=0
-    tmax=2
+    tmax=1
 
     #This is a test coment#
     max_infected_list=[]
@@ -39,11 +41,11 @@ while(True):
 
         if (period/periods==int(period/periods)) and (counter!=0):
             
-            SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 32, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
+            SIR=EoN.fast_SIR(G, 0, gamma, tmin=tmin, tmax = 16, initial_infecteds=infected, initial_recovereds=recovered, return_full_data=True)
             t,d=SIR.summary()
         
         
-            
+            time += 16
             node_stats=list(SIR.get_statuses(nodelist=None, time=32).values())
 
             #creates list of infecteds and recoverds after each iteration to feed into the next#
@@ -67,35 +69,37 @@ while(True):
 
         
         L=[]
-        var_list=[]
-
+        class_list=[]
+        edges=[]
 
 
         #creats list of nodes where we will randomly choose nodes to assign to classes#
-        for x in range(students):
-            L.append(x)
+        L = list(range(students))
         #creates an arbitrary number of variables to assign lists of students in each class for each period#
         for x in range(classes):
-            var_list.append("class_"+str(x))
+            class_list.append([])
 
         
         #Creats the classes for each period where each student is randomly assigned#
-        for x in var_list:
-            globals()[x]=[]
-            for b in range(size):
-                node=random.choice(L)
-                globals()[x].append(node)
-                L.remove(node)
+        for class_x in range(classes):
+            class_list[class_x] = random.sample(L,size)
+            L = list(set(L).difference(set(class_list[class_x]))) # Removes nodes, as they are added to classes to prevent node being present in multiple classes.
+            edges.extend(list((combinations(class_list[class_x],2))))
+        G.add_edges_from(list(edges))
+        
+
+
+        #for x in var_list:
+        #    globals()[x]=[]
+        #    for b in range(size):
+        #        node=random.choice(L)
+        #       globals()[x].append(node)
+        #        L.remove(node)
             
 
 
         #adds edges to create a complete graph within each new class#
-        edges=[]
-        for x in var_list:
-            for b in globals()[x]:
-                for y in globals()[x]:
-                    G.add_edge(b,y)
-                    edges.append([b,y])
+        
         
 
         #for the first iteration, the infecteds are distributed randomly. The rest of the periods depend on the previous infected and recovered lists.#
@@ -107,7 +111,8 @@ while(True):
         counter=counter+1
         t,d=SIR.summary()
         
-        
+        nx.draw(G)
+        plt.show()
         
         node_stats=list(SIR.get_statuses(nodelist=None, time=tmax).values())
 
@@ -127,25 +132,27 @@ while(True):
         time_max=t[np.where(d['I']==max(d['I']))]+time
 
         peak_time_list.append(time_max)
-        time=time+2
+        time=time+1
         #removes edges from G to get ready for next period where the edges will be completely different#
-        edges1=[]
-        edges2=[]
-        for x in edges:
-            if (x[0]==x[1]):
-                continue
-            elif (x[0]>x[1]):
-                edges1.append([x[1],x[0]])
-            else:
-                edges1.append(x)
+        #edges1=[]
+        #edges2=[]
+        #for x in edges:
+        #    if (x[0]==x[1]):
+        #        continue
+        #    elif (x[0]>x[1]):
+        #        edges1.append([x[1],x[0]])
+        #    else:
+        #        edges1.append(x)
         
-        edges1.sort()
-        edges2 = list(edges1 for edges1,_ in itertools.groupby(edges1))
+        #edges1.sort()
+        #edges2 = list(edges1 for edges1,_ in itertools.groupby(edges1))
         #nx.draw(G)
         #plt.show()
-        for x in edges2:
-            G.remove_edge(x[0],x[1])
-                        
+        #for x in edges2:
+        #    G.remove_edge(x[0],x[1])
+        G.remove_edges_from(edges)
+        nx.draw(G)
+        plt.show()
     #gets all the disered metrics#
     total_infected=len(set(recovered))+len(set(final_infected))
     

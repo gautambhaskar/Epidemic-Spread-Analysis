@@ -42,7 +42,7 @@ for i in main_list:
 
 
 
-run_iters = 10
+run_iters = 1
 with open('family.csv', mode='w') as f:
      writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
      writer.writerow(['Max Infected', 'Total Infected', 'Time to Peak', 'Total Population', 'Percent total infected', 'Percent max infected', 'Percent edges connected'])
@@ -68,10 +68,12 @@ with open('family.csv', mode='w') as f:
                print('finished')
            
                SIR=EoN.fast_SIR(G, tau, gamma, initial_infecteds=random.sample(list(range(maximum)), math.floor(rho*maximum)), tmax = tmax,return_full_data=True)
-
+               SIR.display(time=5)
+               plt.show()
 
                for c in edges3:
                     G.remove_edge(c[0],c[1])
+
                     
                 
               
@@ -95,5 +97,5 @@ with open('family.csv', mode='w') as f:
           #
           writer.writerow([str(stats[0]), str(stats[1]), str(stats[2]), str(stats[3]), str(stats[4]), str(stats[5]), str(percent)])
           print('Row written')
-          percent += 0.02
+          percent += 0.2
           
