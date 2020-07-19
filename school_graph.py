@@ -15,7 +15,7 @@ tau =float(input('what is the transmition rate? '))            #transmission rat
 gamma =float(input('what is the recovery rate? '))             #recovery rate
 rho = float(input('what percent is radomly initialized? '))
 days=int(input('how many days to run for '))
-run_iters = 10
+run_iters = 100
 stats = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 for i in range(run_iters):

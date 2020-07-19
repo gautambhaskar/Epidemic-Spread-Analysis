@@ -7,7 +7,7 @@ import itertools
 import numpy as np
 
 
-run_iters = 10
+run_iters = 100
 
 
 #statistics#
