@@ -18,7 +18,7 @@ gamma =float(input('what is the recovery rate? '))             #recovery rate
 rho = float(input('what percent is radomly initialized? '))
 days=int(input('how many days to run for '))
 
-run_iters = 10
+run_iters = 5
 with open('virtual_plus.csv', mode='w') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['Max Infected', 'Total Infected', 'Time to Peak', 'Total Population', 'Percent total infected', 'Percent max infected', 'Percent edges connected'])
@@ -221,7 +221,7 @@ with open('virtual_plus.csv', mode='w') as f:
             if (max_infected != 0):
                 peak_time=peak_time_list[max_infected_list.index(max_infected)]
             else:
-                peak_time=0
+                peak_time=[0]
             print('total_infected= ',total_infected)
             print('max infected= ',max_infected)
             print('peak time= ',peak_time)
@@ -247,4 +247,4 @@ with open('virtual_plus.csv', mode='w') as f:
         print(" ")
         writer.writerow([str(stats[0]), str(stats[1]), str(stats[2]), str(stats[3]), str(stats[4]), str(stats[5]), str(percent)])
         print('Row written')
-        percent += 0.2
+        percent += 0.1
